@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parking Lot</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="parking-lot">
+    <h2>Parking Lot</h2>
+    <div class="parking-spots-container">
+    <div class="parking-spots">
+      <!-- Small Parking Spots -->
+      <div class="parking-spot small">Slot 1</div>
+      <div class="parking-spot small">Slot</div>
+      <!-- Add more small spots as needed -->
+
+      <!-- Medium Parking Spots -->
+      <div class="parking-spot medium">Slot</div>
+      <div class="parking-spot medium">Slot</div>
+      <div class="parking-spot large">Slot</div>
+      <div class="parking-spot large">Slot</div>
+      <!-- Add more medium spots as needed -->
+
+     
+
+</div>
+    </div>
+  </div>
+
+
+
+
+
+  <style>
+
+body {
+ text-align: center;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+
+}
+
+.parking-lot {
+ 
+  margin-top: 50px;
+  width: 60rem;
+}
+
+.parking-spots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 20px;
+}
+
+.parking-spot {
+  
+  border: 2px solid #000;
+}
+
+.small {
+  height: 40px;
+  background-color: #f8d7da; /* Red for small spots */
+}
+
+.medium {
+  height: 50px;
+  background-color: #cce5ff; /* Blue for medium spots */
+}
+
+.large {
+  height: 100px;
+  background-color: #d4edda; /* Green for large spots */
+}
+
+  </style>
+</body>
+</html>

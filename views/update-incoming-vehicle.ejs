@@ -1,0 +1,267 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>VPS</title>
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/datatable.css" rel="stylesheet">
+	<link href="css/datepicker3.css" rel="stylesheet">
+	<link href="css/styles.css" rel="stylesheet">
+	
+	<!--Custom Font-->
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+</head>
+<body>
+  <%- include("includes/nav.ejs") %>
+  <%- include("includes/sidebar.ejs") %>
+		
+	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+		<div class="row">
+			<ol class="breadcrumb">
+				<li><a href="/home">
+					<em class="fa fa-home"></em>
+				</a></li>
+				<li class="active">Vehicle Category Management</li>
+			</ol>
+		</div><!--/.row-->
+		
+		<div class="row">
+			<div class="col-lg-12">
+				<!-- <h1 class="page-header">Vehicle Management</h1> -->
+			</div>
+		</div><!--/.row-->
+		
+		<div class="row">
+				<div class="col-lg-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">Manage Incoming Vehicles</div>
+						<div class="panel-body">
+
+           
+                        
+                        <div class="col-md-12">
+
+													<form method="POST" id="update_user" action="/vehicle/api/vehicleInfoPut/<%= vehicle._id %>">
+														<!-- Add a hidden input field to override the method -->
+														
+
+								<div class="form-group">
+									<label>Vehicle Registration Number</label>
+									<input type="text" class="form-control" value="<%= vehicle.registration_number%>" id="catename" name="registration_number" readonly>
+							</div>
+							
+
+
+                                <div class="form-group">
+									<label>Category</label>
+									<input type="text" class="form-control" value="<%= vehicle.vehicle_category%>" id="sdesc" name="vehicle_category" readonly>
+								</div>
+
+
+                                <div class="form-group">
+									<label>Parking Number</label>
+									<input type="text" class="form-control" value="<%= vehicle.parking_number%>" id="sdesc" name="parking_number" readonly>
+								</div>
+							
+								<div class="form-group">
+									<label>Current Status</label>
+									<input type="text" class="form-control" value="<%= vehicle.status%>" readonly>
+								</div>
+
+
+                                <div class="form-group">
+									<label>Vehicle IN Time</label>
+									<input type="text" class="form-control" value="<%= vehicle.intime%>" id="sdesc" name="intime" readonly>
+								</div>
+
+								<div class="form-group">
+									<label>Total Charge</label>
+									<input type="number" class="form-control" value="<%= vehicle.payment%>" id="parkingcharge" name="payment" readonly>
+							</div>
+							<div class="form-group">
+								<label>Out Time</label>
+								<input class="form-control" type="datetime-local" id="datetimeInput" name="outime" required>
+						</div>
+							
+
+
+                                <div class="form-group">
+									<label>Status</label>
+									<select name="status" class="form-control" required="true" >
+                                        <option value="Unparked">Unpark</option>
+                                    </select>
+								</div>
+
+
+             
+							
+
+
+
+									<button type="submit" class="btn btn-success" name="submit-in">Submit For Out-Going</button>
+									<button type="reset" class="btn btn-default">Reset</button>
+                                    
+								</div> <!--  col-md-12 ends -->
+
+
+						</div>
+					</div>
+				</div>
+				
+				
+				
+</div><!--/.row-->
+		
+		
+		
+
+	</div>
+
+	<script>
+function calculateParkingCharge() {
+    var intimeInput = document.getElementById("sdesc").value;
+    var outimeInput = document.getElementById("datetimeInput").value;
+
+    console.log("Vehicle IN Time Input:", intimeInput);
+    console.log("Out Time Input:", outimeInput);
+
+    // Parse input values into Date objects
+    var intime = new Date(intimeInput);
+    var outime = new Date(outimeInput);
+
+    console.log("Parsed Vehicle IN Time:", intime);
+    console.log("Parsed Out Time:", outime);
+
+    // Check if parsed dates are valid
+    if (isNaN(intime.getTime()) || isNaN(outime.getTime())) {
+        console.error("Invalid date input.");
+        return; // Exit function if either date is invalid
+    }
+
+    // Calculate time difference in hours
+    var differenceInHours = Math.abs(outime - intime) / 36e5; // Difference in hours
+
+    
+    var vehicleType = "<%= vehicle.type%>"; // Assuming vehicle type is stored in a variable named "vehicle.type"
+    var parkingSlotSize = "";
+
+    if (vehicleType === "S") {
+        parkingSlotSize = "SP";
+    } else if (vehicleType === "M") {
+        parkingSlotSize = "MP";
+    } else if (vehicleType === "L") {
+        parkingSlotSize = "LP";
+    }
+
+    // Calculate parking charge based on pricing structure
+    var baseCharge = 40; // Flat rate for the first 3 hours
+    var exceedingHourlyRate = 0;
+
+    if (parkingSlotSize === "SP") {
+        exceedingHourlyRate = 20;
+    } else if (parkingSlotSize === "MP") {
+        exceedingHourlyRate = 60;
+    } else if (parkingSlotSize === "LP") {
+        exceedingHourlyRate = 100;
+    }
+
+    var totalCharge = baseCharge + Math.max(0, differenceInHours - 3) * exceedingHourlyRate;
+
+    // Fill in the Total Charge field
+    document.getElementById("parkingcharge").innerText; // Fixed to 2 decimal places
+}
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+	
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#update_user').submit(function(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Serialize the form data
+        var formData = $(this).serialize();
+
+        // Send a PUT request using AJAX
+        $.ajax({
+            url: $(this).attr('action'), // Get the form action URL
+            method: "PUT",
+            data: formData,
+            success: function(response) {
+                // Handle success
+                alert("Data Updated Successfully!");
+                // Redirect to the desired route after successful update
+                window.location.href = '/in-vehicle';
+            },
+            error: function(xhr, status, error) {
+                // Handle error
+                console.error("Error updating data:", error);
+                alert("Data Updated");
+            }
+        });
+    });
+});
+
+</script>
+	
+	<!--/.main-->
+
+	<script src="js/jquery-1.11.1.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/chart.min.js"></script>
+	<script src="js/chart-data.js"></script>
+	<script src="js/easypiechart.js"></script>
+	<script src="js/easypiechart-data.js"></script>
+	<script src="js/bootstrap-datepicker.js"></script>
+	<script src="js/custom.js"></script>
+	<script>
+		window.onload = function () {
+		var chart1 = document.getElementById("line-chart").getContext("2d");
+		window.myLine = new Chart(chart1).Line(lineChartData, {
+		responsive: true,
+		scaleLineColor: "rgba(0,0,0,.2)",
+		scaleGridLineColor: "rgba(0,0,0,.05)",
+		scaleFontColor: "#c5c7cc"
+		});
+};
+	</script>
+
+    <script>
+        $(document).ready(function() {
+    $('#example').DataTable();
+} );
+    </script>
+
+
+<script>
+  window.onload = function() {
+    // Get the current date
+    const currentDate = new Date(new Date().getTime() + (8 * 60 * 60 * 1000));
+    
+    // Format the date and time 
+    const formattedDate = currentDate.toISOString().slice(0,16);
+    
+    // Set the value of the datetime input to the current date and time
+    document.getElementById('datetimeInput').value = formattedDate;
+  };
+</script>
+		
+</body>
+</html>
+
